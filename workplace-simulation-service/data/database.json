@@ -12,7 +12,7 @@
         {
           "id": "1-1",
           "text": "미팅 중에 바로 기술적 문제점을 지적하고 대안을 제시한다",
-          "votes": 28,
+          "votes": 29,
           "votesByPosition": {
             "intern": 3,
             "staff": 8,
@@ -71,7 +71,7 @@
       ],
       "aiRecommendation": "1-2",
       "aiReasoning": "상사와 1:1로 우려를 전달하면 공개적인 대립을 피하고, 기술적 위험을 조용히 설명하며 대안을 제시할 수 있어 경영진 약속을 재검토하도록 도울 수 있습니다.",
-      "totalVotes": 108,
+      "totalVotes": 109,
       "status": "active",
       "createdAt": "2026-01-10T09:00:00.000Z",
       "approvedAt": "2026-01-10T10:00:00.000Z",
@@ -285,7 +285,17 @@
       "createdAt": "2026-01-14T04:31:35.681Z",
       "approvedAt": "2026-01-13T09:00:00.000Z",
       "totalVotes": 2,
-      "comments": []
+      "comments": [
+        {
+          "id": "1768369888431",
+          "author": "점심 배부른 오리",
+          "choiceId": "3",
+          "content": "나는 회 먹고싶은뎅",
+          "timestamp": "2026-01-14T05:51:28.431Z",
+          "likes": 0,
+          "replies": []
+        }
+      ]
     },
     {
       "category": "colleague",
@@ -854,9 +864,7 @@
       "totalVotes": 2,
       "comments": [],
       "approvedAt": "2026-01-14T05:30:39.632Z"
-    }
-  ],
-  "pendingSimulations": [
+    },
     {
       "category": [
         "boss",
@@ -914,17 +922,159 @@
           }
         }
       ],
-      "aiRecommendation": "",
-      "aiReasoning": "",
+      "aiRecommendation": "2",
+      "aiReasoning": "공식 메일이나 팀 채팅 등 업무 전용 채널을 요청하면 직장 분위기를 해치지 않으면서도 사적인 연락을 자연스럽게 제한할 수 있어 가장 균형 잡힌 대응입니다.",
       "persona": {
         "position": "사원",
         "yearsOfExperience": 1
       },
       "id": "1768368748896",
-      "status": "pending",
+      "status": "active",
       "createdAt": "2026-01-14T05:32:28.896Z",
       "totalVotes": 0,
-      "comments": []
+      "comments": [],
+      "approvedAt": "2026-01-14T05:57:07.422Z"
+    },
+    {
+      "category": [
+        "project",
+        "boss"
+      ],
+      "title": "회의에서 의견 제시하기",
+      "situation": "프로젝트 진행 중인 주간 회의에서 팀 리더가 현재 상황과 향후 방향에 대해 의견을 물었다. 입사 1년 차 사원인 나는 아이디어가 부족하다고 느껴 직접 말하기가 부담스럽다. 어떻게 의견을 제시해야 할지 고민하고 있다.",
+      "choices": [
+        {
+          "id": "1",
+          "text": "간단히 메모를 작성해 회의 끝에 조용히 전달한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "사전에 팀 리더에게 이메일로 아이디어를 공유한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "동료와 아이디어를 검토해 자신감을 얻은 후 말한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "다음 회의에서 짧게라도 한 문장으로 핵심만 제시한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "4",
+      "aiReasoning": "짧게 핵심만 말하면 부담을 최소화하면서도 회의에 직접 참여해 존재감을 보여줄 수 있습니다. 이는 사내에서 의견을 제시하는 습관을 형성하고, 추후 더 자세히 설명할 기회를 만들기에 효과적입니다.",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768370193603",
+      "status": "active",
+      "createdAt": "2026-01-14T05:56:33.603Z",
+      "totalVotes": 0,
+      "comments": [],
+      "approvedAt": "2026-01-14T05:57:10.365Z"
+    },
+    {
+      "category": [
+        "client",
+        "personal"
+      ],
+      "title": "고객 동료와 사적 연락",
+      "situation": "귀하가 1년 차 사원으로 근무하고 있는 회사에서, 최근 프로젝트를 함께 진행한 고객사의 동료와 업무 외에도 취미와 관심사가 많이 겹쳐 친밀감을 느끼고 있습니다. 서로 좋은 관계를 유지하고 싶지만, 사적인 연락이 회사 정책이나 고객사와의 신뢰에 영향을 미칠까 우려됩니다. 이런 상황에서 어떻게 행동하는 것이 적절할까요?",
+      "choices": [
+        {
+          "id": "1",
+          "text": "업무 관계에 국한하고 사적 연락은 삼간다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "먼저 사내·고객사 규정을 확인하고 허용 범위를 파악한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "상대에게 직접 물어 허가를 받은 뒤, 가볍게 연락한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "팀 리더에게 상황을 보고하고 조언을 구한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "2",
+      "aiReasoning": "먼저 사내·고객사 규정을 확인해 허용 범위를 파악하면 정책 위반 위험을 최소화하면서 상황에 맞는 적절한 행동을 결정할 수 있습니다.",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768370203431",
+      "status": "active",
+      "createdAt": "2026-01-14T05:56:43.431Z",
+      "totalVotes": 0,
+      "comments": [],
+      "approvedAt": "2026-01-14T05:57:14.431Z"
     }
-  ]
+  ],
+  "pendingSimulations": []
 }

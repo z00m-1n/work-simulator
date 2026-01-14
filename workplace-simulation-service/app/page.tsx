@@ -62,30 +62,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="border-y border-border bg-background py-12">
-        <div className="container mx-auto max-w-7xl px-4">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">5,234</div>
-              <div className="mt-1 text-sm text-muted-foreground">총 참여자</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{mockSimulations.length}</div>
-              <div className="mt-1 text-sm text-muted-foreground">상담 케이스</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">1,847</div>
-              <div className="mt-1 text-sm text-muted-foreground">토론 댓글</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">94%</div>
-              <div className="mt-1 text-sm text-muted-foreground">만족도</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20">
         <div className="container mx-auto max-w-7xl px-4">
