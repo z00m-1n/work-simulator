@@ -4,7 +4,7 @@ import { approveSimulation } from "@/lib/db"
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const success = approveSimulation(id)
+    const success = await approveSimulation(id)
     
     if (!success) {
       return NextResponse.json({ error: "Approval failed" }, { status: 400 })

@@ -318,6 +318,12 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
   const totalCommentCount = getTotalCommentCount(comments)
   const choiceLabels = ["A", "B", "C", "D", "E", "F"]
 
+  // AI 추천 선택지를 레이블로 변환
+  const getRecommendationLabel = () => {
+    const recommendedIndex = simulation.choices.findIndex((c) => c.id === simulation.aiRecommendation)
+    return recommendedIndex !== -1 ? `${choiceLabels[recommendedIndex]}안` : simulation.aiRecommendation
+  }
+
   // 카테고리 배열 처리
   const categoryIds = Array.isArray(simulation.category) ? simulation.category : [simulation.category]
   const simulationCategories = categoryIds
@@ -563,7 +569,7 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
                 </CardHeader>
                 <CardContent>
                   <div className="rounded-lg bg-background p-4 mb-4">
-                    <p className="font-semibold text-primary">{simulation.aiRecommendation}</p>
+                    <p className="font-semibold text-primary">{getRecommendationLabel()}</p>
                   </div>
                   <div className="mb-4">
                     <h4 className="font-medium text-foreground mb-2">추천 이유</h4>
