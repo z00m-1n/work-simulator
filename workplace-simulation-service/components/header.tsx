@@ -17,11 +17,9 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-7xl px-4 flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <span className="text-lg font-bold text-primary-foreground">슬</span>
-          </div>
-          <span className="text-xl font-bold text-foreground">슬기로운 회사생활</span>
+        <Link href="/" className="flex items-center gap-0">
+          <img src="/logo.png" alt="슬기로운 회사생활" className="h-23 w-30 rounded-lg mt-3" />
+          <span className="text-2xl font-bold text-foreground">슬기로운 회사생활</span>
         </Link>
 
         <nav className="flex items-center gap-1">

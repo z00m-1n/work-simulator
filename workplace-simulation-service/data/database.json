@@ -24,7 +24,7 @@
         {
           "id": "1-2",
           "text": "미팅 후 1:1로 상사를 찾아가 우려사항을 전달한다",
-          "votes": 47,
+          "votes": 48,
           "votesByPosition": {
             "intern": 5,
             "staff": 12,
@@ -71,7 +71,7 @@
       ],
       "aiRecommendation": "1-2",
       "aiReasoning": "상사와 1:1로 우려를 전달하면 공개적인 대립을 피하고, 기술적 위험을 조용히 설명하며 대안을 제시할 수 있어 경영진 약속을 재검토하도록 도울 수 있습니다.",
-      "totalVotes": 107,
+      "totalVotes": 108,
       "status": "active",
       "createdAt": "2026-01-10T09:00:00.000Z",
       "approvedAt": "2026-01-10T10:00:00.000Z",
@@ -174,7 +174,7 @@
         {
           "id": "3-2",
           "text": "HR팀이나 컴플라이언스 팀에 익명으로 상담한다",
-          "votes": 32,
+          "votes": 33,
           "votesByPosition": {
             "intern": 5,
             "staff": 10,
@@ -211,7 +211,7 @@
       "comments": [],
       "aiRecommendation": "3-2",
       "aiReasoning": "불법·비윤리적 지시는 조직법과 개인 보호를 위해 즉시 컴플라이언스나 HR에 익명으로 상담하는 것이 가장 안전합니다. 이를 통해 책임을 회피하고 부당한 압력에 대처할 수 있습니다.",
-      "totalVotes": 107,
+      "totalVotes": 108,
       "status": "active",
       "createdAt": "2026-01-12T14:20:00.000Z",
       "approvedAt": "2026-01-12T15:00:00.000Z",
@@ -820,7 +820,7 @@
         {
           "id": "3",
           "text": "업무와 무관한 소규모 회식이나 취미 활동을 제안해 자연스럽게 사적 만남을 만든다.",
-          "votes": 0,
+          "votes": 2,
           "votesByPosition": {
             "intern": 0,
             "staff": 0,
@@ -851,7 +851,7 @@
       "id": "1768368630477",
       "status": "active",
       "createdAt": "2026-01-14T05:30:30.477Z",
-      "totalVotes": 0,
+      "totalVotes": 2,
       "comments": [],
       "approvedAt": "2026-01-14T05:30:39.632Z"
     }
