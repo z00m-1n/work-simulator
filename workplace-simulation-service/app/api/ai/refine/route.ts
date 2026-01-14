@@ -38,47 +38,48 @@ ${situation}
 }`
 
     // GPT-OSS-120B API 호출
-    const apiEndpoint = process.env.AI_API_ENDPOINT || "http://localhost:8000/v1/chat/completions"
-    const apiKey = process.env.AI_API_KEY || ""
+    const apiEndpoint = "https://hackerthon-gpt120.platform.haiqv.ai/v1/chat/completions"
 
     const aiResponse = await fetch(apiEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
       },
       body: JSON.stringify({
         model: "GPT-OSS-120B",
         messages: [
           {
-            role: "system",
-            content: "당신은 업무 상황 시뮬레이션을 생성하는 전문가입니다.",
-          },
-          {
             role: "user",
             content: prompt,
           },
         ],
-        temperature: 0.7,
-        max_tokens: 1000,
       }),
     })
 
     if (!aiResponse.ok) {
-      console.error("AI API error:", await aiResponse.text())
+      const errorText = await aiResponse.text()
+      console.error("AI API error:", errorText)
       return NextResponse.json({ error: "AI 생성 실패" }, { status: 500 })
     }
 
     const aiData = await aiResponse.json()
     
-    // API 응답 형식에 따라 파싱 조정 필요
+    // API 응답 파싱
     let generatedContent
     try {
-      // OpenAI 스타일 응답 가정
-      const content = aiData.choices?.[0]?.message?.content || aiData.content || ""
-      generatedContent = JSON.parse(content)
+      // GPT-OSS-120B 응답 형식: choices[0].message.content
+      const content = aiData.choices?.[0]?.message?.content || ""
+      
+      // 코드 블록 제거 (```json ... ``` 형식)
+      const cleanContent = content
+        .replace(/```json\s*/g, "")
+        .replace(/```\s*/g, "")
+        .trim()
+      
+      generatedContent = JSON.parse(cleanContent)
     } catch (parseError) {
       console.error("Failed to parse AI response:", parseError)
+      console.error("Raw content:", aiData)
       return NextResponse.json({ error: "AI 응답 파싱 실패" }, { status: 500 })
     }
 
