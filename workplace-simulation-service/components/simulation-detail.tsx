@@ -359,14 +359,6 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
             <CardTitle className="text-lg">상황 설명</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 flex items-center gap-2">
-              <Badge variant="outline" className="bg-muted/50">
-                {simulation.persona.position}
-              </Badge>
-              <Badge variant="outline" className="bg-muted/50">
-                {simulation.persona.yearsOfExperience}년차
-              </Badge>
-            </div>
             <p className="text-foreground leading-relaxed">{simulation.situation}</p>
           </CardContent>
         </Card>
