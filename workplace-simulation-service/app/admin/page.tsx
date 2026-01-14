@@ -411,7 +411,7 @@ export default function AdminPage() {
               <Button
                 onClick={confirmAction}
                 className={
-                  actionType === "reject" ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""
+                  actionType === "reject" ? "bg-destructive text-white hover:bg-destructive/90" : ""
                 }
                 disabled={actionType === "reject" && !rejectReason.trim()}
               >
