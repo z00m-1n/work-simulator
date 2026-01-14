@@ -509,7 +509,7 @@
         {
           "id": "1",
           "text": "팀장에게 바로 상황을 알리고 퇴근 허락을 정중히 요청한다.",
-          "votes": 0,
+          "votes": 1,
           "votesByPosition": {
             "intern": 0,
             "staff": 0,
@@ -565,7 +565,7 @@
       "status": "active",
       "createdAt": "2026-01-14T04:55:19.604Z",
       "approvedAt": "2026-01-13T13:00:00.000Z",
-      "totalVotes": 0,
+      "totalVotes": 1,
       "comments": []
     },
     {
@@ -591,7 +591,7 @@
         {
           "id": "2",
           "text": "업무 분배를 재조정하고, 마감 이후 야근은 최소화하자는 제안을 회의에서 한다.",
-          "votes": 1,
+          "votes": 2,
           "votesByPosition": {
             "intern": 0,
             "staff": 0,
@@ -634,9 +634,76 @@
       "id": "1768366974577",
       "status": "active",
       "createdAt": "2026-01-14T05:02:54.577Z",
-      "totalVotes": 2,
+      "totalVotes": 3,
       "comments": [],
       "approvedAt": "2026-01-14T05:03:00.303Z"
+    },
+    {
+      "category": "boss",
+      "title": "업무 과부하 상황 대처",
+      "situation": "사수님과 상사가 각각 다른 업무 지시를 내리면서 동시에 진행해야 할 과제가 늘어나고 있습니다. 현재 업무량이 감당하기 어려워 보이며, 어느 쪽을 우선해야 할지 혼란스러운 상황입니다. 이때 어떻게 대화하고 조율하면 업무 부담을 줄일 수 있을까요?",
+      "choices": [
+        {
+          "id": "1",
+          "text": "사수님과 상사에게 각각 현재 업무량을 설명하고, 우선순위와 일정 조정을 공식적으로 요청한다.",
+          "votes": 1,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "전체 업무를 리스트업해 우선순위를 매긴 뒤, 상사에게 보고하고 낮은 우선순위 작업을 연기하거나 위임한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "팀원이나 동료에게 협조를 구해 일부 작업을 분담하고, 협업 가능성을 상사에게 제안한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "일단 모든 일을 무리하게 진행하되, 완료 후 피드백을 받아 향후 업무 배분 방식을 개선한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "1",
+      "aiReasoning": "사수님과 상사에게 현재 업무량을 명확히 전달하고 공식적으로 우선순위와 일정 조정을 요청하면 갈등을 최소화하고 실현 가능한 업무 계획을 수립할 수 있습니다.",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768367510658",
+      "status": "active",
+      "createdAt": "2026-01-14T05:11:50.658Z",
+      "totalVotes": 1,
+      "comments": [],
+      "approvedAt": "2026-01-14T05:12:00.227Z"
     }
   ],
   "pendingSimulations": []

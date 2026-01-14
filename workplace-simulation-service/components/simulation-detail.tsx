@@ -181,7 +181,7 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
   }, [simulation.id])
 
   const category = categories.find((c) => c.id === simulation.category)
-  const totalVotes = simulation.totalVotes + (hasVoted ? 1 : 0)
+  const totalVotes = simulation.totalVotes
 
   const handleVote = async () => {
     if (selectedChoice && !voting) {
