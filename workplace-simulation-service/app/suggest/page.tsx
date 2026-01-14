@@ -44,24 +44,37 @@ export default function SuggestPage() {
 
     setStep("processing")
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      const response = await fetch("/api/ai/refine", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          categories: selectedCategories,
+          situation,
+          position,
+          yearsOfExperience,
+        }),
+      })
 
-    const generated = {
-      title: "팀 미팅에서 다른 의견을 제시해야 할 때",
-      situation: `팀 미팅에서 상사가 제안한 방향에 대해 다른 의견이 있습니다. 당신의 의견이 프로젝트에 더 좋은 결과를 가져올 수 있다고 확신하지만, 분위기상 반대 의견을 내기가 조심스럽습니다. 어떻게 대응하시겠습니까?`,
-      choices: [
-        { id: "a", text: "미팅 중 정중하게 의견을 제시한다" },
-        { id: "b", text: "미팅 후 상사에게 따로 말씀드린다" },
-        { id: "c", text: "동료에게 먼저 의견을 공유하고 함께 제안한다" },
-        { id: "d", text: "일단 상사의 의견을 따른다" },
-      ],
+      if (!response.ok) {
+        throw new Error("AI 생성 실패")
+      }
+
+      const generated = await response.json()
+
+      setGeneratedSimulation(generated)
+      setEditedTitle(generated.title)
+      setEditedSituation(generated.situation)
+      setEditedChoices([...generated.choices])
+      setStep("preview")
+    } catch (error) {
+      console.error("AI generation failed:", error)
+      // 에러 발생 시 입력 단계로 돌아가기
+      alert("AI 다듬기에 실패했습니다. 다시 시도해주세요.")
+      setStep("input")
     }
-
-    setGeneratedSimulation(generated)
-    setEditedTitle(generated.title)
-    setEditedSituation(generated.situation)
-    setEditedChoices([...generated.choices])
-    setStep("preview")
   }
 
   const handleSubmit = async () => {
