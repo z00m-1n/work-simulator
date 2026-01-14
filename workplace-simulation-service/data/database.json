@@ -856,5 +856,75 @@
       "approvedAt": "2026-01-14T05:30:39.632Z"
     }
   ],
-  "pendingSimulations": []
+  "pendingSimulations": [
+    {
+      "category": [
+        "boss",
+        "personal"
+      ],
+      "title": "상사의 사적 연락 거절",
+      "situation": "1년 차 사원인 나는 업무 외에 상사가 개인적인 내용으로 연락을 자주 해와 불편함을 느낀다. 업무와 관계 없는 사적인 대화는 거절하고 싶지만, 직장 분위기를 해치지 않으면서 명확히 입장을 전달해야 한다.",
+      "choices": [
+        {
+          "id": "1",
+          "text": "업무 시간에만 연락해 주세요. 개인적인 이야기는 어렵습니다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "업무 관련 내용은 공식 메일이나 팀 채팅으로만 주고받겠습니다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "개인적인 대화는 사양하겠습니다. 업무에 집중하고 싶습니다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "HR에 상담하여 적절한 연락 방식을 함께 정하고 싶습니다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "",
+      "aiReasoning": "",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768368748896",
+      "status": "pending",
+      "createdAt": "2026-01-14T05:32:28.896Z",
+      "totalVotes": 0,
+      "comments": []
+    }
+  ]
 }

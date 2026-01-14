@@ -30,11 +30,30 @@ export default function AdminPage() {
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
   const [rejectReason, setRejectReason] = useState("")
   const [loading, setLoading] = useState(true)
-  const [approvedCount, setApprovedCount] = useState(11)
+  const [approvedCount, setApprovedCount] = useState(12)
   const [rejectedCount, setRejectedCount] = useState(2)
 
   useEffect(() => {
-    // 매번 비밀번호 입력 필요
+    // localStorage에서 카운트 로드
+    const savedApprovedCount = localStorage.getItem("admin_approved_count")
+    const savedRejectedCount = localStorage.getItem("admin_rejected_count")
+    
+    if (savedApprovedCount) {
+      setApprovedCount(parseInt(savedApprovedCount))
+    } else {
+      // 초기값 설정
+      localStorage.setItem("admin_approved_count", "12")
+      setApprovedCount(12)
+    }
+    
+    if (savedRejectedCount) {
+      setRejectedCount(parseInt(savedRejectedCount))
+    } else {
+      // 초기값 설정
+      localStorage.setItem("admin_rejected_count", "2")
+      setRejectedCount(2)
+    }
+    
     setLoading(false)
   }, [])
 
@@ -92,11 +111,15 @@ export default function AdminPage() {
       if (response.ok) {
         setSimulations(simulations.filter((s) => s.id !== selectedSimulation.id))
         
-        // 승인/거절 카운트 증가
+        // 승인/거절 카운트 증가 및 localStorage에 저장
         if (actionType === "approve") {
-          setApprovedCount(prev => prev + 1)
+          const newCount = approvedCount + 1
+          setApprovedCount(newCount)
+          localStorage.setItem("admin_approved_count", newCount.toString())
         } else {
-          setRejectedCount(prev => prev + 1)
+          const newCount = rejectedCount + 1
+          setRejectedCount(newCount)
+          localStorage.setItem("admin_rejected_count", newCount.toString())
         }
         
         setSelectedSimulation(null)
