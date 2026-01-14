@@ -55,10 +55,29 @@ export default function AdminPage() {
       setRejectedCount(2)
     }
     
-    // 처리 내역 로드
+    // 처리 내역 로드 또는 초기화
     const savedHistory = localStorage.getItem("admin_history")
     if (savedHistory) {
       setHistory(JSON.parse(savedHistory))
+    } else {
+      // 초기 처리 내역을 서버에서 가져와서 설정
+      fetch("/api/simulations")
+        .then(res => res.json())
+        .then(data => {
+          // approvedAt이 있는 시뮬레이션들을 처리 내역으로 변환
+          const initialHistory = data
+            .filter((sim: any) => sim.approvedAt)
+            .sort((a: any, b: any) => new Date(b.approvedAt).getTime() - new Date(a.approvedAt).getTime())
+            .map((sim: any) => ({
+              id: sim.id,
+              title: sim.title,
+              status: "approved",
+              date: sim.approvedAt.split('T')[0]
+            }))
+          setHistory(initialHistory)
+          localStorage.setItem("admin_history", JSON.stringify(initialHistory))
+        })
+        .catch(err => console.error("Failed to load initial history:", err))
     }
     
     setLoading(false)
