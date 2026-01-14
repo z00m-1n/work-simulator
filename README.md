@@ -1,7 +1,7 @@
 # 🐿️ 슬기로운 회사생활 (Work Simulator)
 
 > **직장인들을 위한 업무 상황 토론 & 집단지성 커뮤니티**
-> "애매한 업무 상황, 우리 회사의 집단 지성으로 해결합니다."
+>> "애매한 업무 상황, 우리 회사의 집단 지성으로 해결합니다."
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![React](https://img.shields.io/badge/React-18.0-61DAFB?logo=react) ![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38B2AC?logo=tailwind-css)
 
