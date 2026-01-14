@@ -30,6 +30,8 @@ export default function AdminPage() {
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
   const [rejectReason, setRejectReason] = useState("")
   const [loading, setLoading] = useState(true)
+  const [approvedCount, setApprovedCount] = useState(11)
+  const [rejectedCount, setRejectedCount] = useState(2)
 
   useEffect(() => {
     // 매번 비밀번호 입력 필요
@@ -89,6 +91,14 @@ export default function AdminPage() {
 
       if (response.ok) {
         setSimulations(simulations.filter((s) => s.id !== selectedSimulation.id))
+        
+        // 승인/거절 카운트 증가
+        if (actionType === "approve") {
+          setApprovedCount(prev => prev + 1)
+        } else {
+          setRejectedCount(prev => prev + 1)
+        }
+        
         setSelectedSimulation(null)
         setActionType(null)
         setRejectReason("")
@@ -100,8 +110,8 @@ export default function AdminPage() {
 
   const stats = {
     pending: simulations.length,
-    approved: 47,
-    rejected: 12,
+    approved: approvedCount,
+    rejected: rejectedCount,
   }
 
   // 로그인 화면

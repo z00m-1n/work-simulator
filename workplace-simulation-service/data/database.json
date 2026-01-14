@@ -784,6 +784,76 @@
       "totalVotes": 0,
       "comments": [],
       "approvedAt": "2026-01-14T05:22:54.200Z"
+    },
+    {
+      "category": [
+        "colleague",
+        "personal"
+      ],
+      "title": "동료와 사적 연락 고민",
+      "situation": "1년 차 사원인 나는 같은 팀 동료와 업무 외 대화가 자연스럽게 이어져 친밀감을 느낀다. 하지만 사적인 연락을 주고받는 것이 업무 관계에 영향을 미칠까 고민한다. 개인적인 연락을 시작해도 괜찮을지, 어떻게 접근해야 할지 막연하다.",
+      "choices": [
+        {
+          "id": "1",
+          "text": "직접 ‘친구로 연락하고 싶다’는 의사를 솔직히 물어보고, 상대의 의견을 존중한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "팀 전체 채팅방이나 사내 메신저 그룹에 먼저 친목 목적의 메시지를 올려 분위기를 살핀다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "업무와 무관한 소규모 회식이나 취미 활동을 제안해 자연스럽게 사적 만남을 만든다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "관계를 유지하되 일과 관련된 대화에만 집중하고, 사적인 연락은 잠시 보류한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "3",
+      "aiReasoning": "업무와 사적인 경계를 유지하면서 자연스럽게 친목을 도모할 수 있어, 팀 분위기도 해치지 않고 신뢰를 쌓을 수 있다.",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768368630477",
+      "status": "active",
+      "createdAt": "2026-01-14T05:30:30.477Z",
+      "totalVotes": 0,
+      "comments": [],
+      "approvedAt": "2026-01-14T05:30:39.632Z"
     }
   ],
   "pendingSimulations": []
