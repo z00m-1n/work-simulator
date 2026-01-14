@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,26 +14,59 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
-import { pendingSimulations, categories, type Simulation } from "@/lib/mock-data"
+import { categories } from "@/lib/mock-data"
+import type { Simulation } from "@/lib/db"
 
 export default function AdminPage() {
-  const [simulations, setSimulations] = useState(pendingSimulations)
+  const [simulations, setSimulations] = useState<Simulation[]>([])
   const [selectedSimulation, setSelectedSimulation] = useState<Simulation | null>(null)
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
   const [rejectReason, setRejectReason] = useState("")
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadPendingSimulations()
+  }, [])
+
+  const loadPendingSimulations = async () => {
+    try {
+      const response = await fetch("/api/admin/pending")
+      const data = await response.json()
+      setSimulations(data)
+    } catch (error) {
+      console.error("Failed to load pending simulations:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleAction = (simulation: Simulation, action: "approve" | "reject") => {
     setSelectedSimulation(simulation)
     setActionType(action)
   }
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     if (!selectedSimulation) return
 
-    setSimulations(simulations.filter((s) => s.id !== selectedSimulation.id))
-    setSelectedSimulation(null)
-    setActionType(null)
-    setRejectReason("")
+    try {
+      const endpoint =
+        actionType === "approve"
+          ? `/api/admin/approve/${selectedSimulation.id}`
+          : `/api/admin/reject/${selectedSimulation.id}`
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+      })
+
+      if (response.ok) {
+        setSimulations(simulations.filter((s) => s.id !== selectedSimulation.id))
+        setSelectedSimulation(null)
+        setActionType(null)
+        setRejectReason("")
+      }
+    } catch (error) {
+      console.error("Action failed:", error)
+    }
   }
 
   const stats = {

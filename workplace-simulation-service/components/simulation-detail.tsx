@@ -158,27 +158,54 @@ function CommentItem({
   )
 }
 
-export function SimulationDetail({ simulation }: { simulation: Simulation }) {
+export function SimulationDetail({ simulation: initialSimulation }: { simulation: Simulation }) {
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null)
   const [hasVoted, setHasVoted] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [newComment, setNewComment] = useState("")
-  const [comments, setComments] = useState<Comment[]>(simulation.comments)
+  const [comments, setComments] = useState<Comment[]>(initialSimulation.comments)
   const [positionFilter, setPositionFilter] = useState<string>("all")
+  const [simulation, setSimulation] = useState(initialSimulation)
+  const [voting, setVoting] = useState(false)
 
   const category = categories.find((c) => c.id === simulation.category)
-  const totalVotes = simulation.choices.reduce((acc, c) => acc + c.votes, 0) + (hasVoted ? 1 : 0)
+  const totalVotes = simulation.totalVotes + (hasVoted ? 1 : 0)
 
-  const handleVote = () => {
-    if (selectedChoice) {
-      setHasVoted(true)
-      setShowResults(true)
+  const handleVote = async () => {
+    if (selectedChoice && !voting) {
+      setVoting(true)
+      try {
+        const response = await fetch("/api/vote", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            simulationId: simulation.id,
+            choiceId: selectedChoice,
+            position: positionFilter !== "all" ? positionFilter : undefined,
+          }),
+        })
+
+        if (response.ok) {
+          // 업데이트된 시뮬레이션 데이터 가져오기
+          const simResponse = await fetch(`/api/simulations/${simulation.id}`)
+          const updatedSim = await simResponse.json()
+          setSimulation(updatedSim)
+          setHasVoted(true)
+          setShowResults(true)
+        }
+      } catch (error) {
+        console.error("Vote failed:", error)
+      } finally {
+        setVoting(false)
+      }
     }
   }
 
   const getVotePercentage = (choice: Choice) => {
     if (positionFilter === "all") {
-      const votes = choice.votes + (hasVoted && selectedChoice === choice.id ? 1 : 0)
+      const votes = choice.votes
       return totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0
     } else {
       const positionVotes = choice.votesByPosition?.[positionFilter as keyof typeof choice.votesByPosition] || 0
@@ -192,24 +219,35 @@ export function SimulationDetail({ simulation }: { simulation: Simulation }) {
 
   const getVoteCount = (choice: Choice) => {
     if (positionFilter === "all") {
-      return choice.votes + (hasVoted && selectedChoice === choice.id ? 1 : 0)
+      return choice.votes
     }
     return choice.votesByPosition?.[positionFilter as keyof typeof choice.votesByPosition] || 0
   }
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim() && selectedChoice) {
-      const comment: Comment = {
-        id: `new-${Date.now()}`,
-        author: generateRandomNickname(),
-        choiceId: selectedChoice,
-        content: newComment,
-        timestamp: "방금 전",
-        likes: 0,
-        replies: [],
+      try {
+        const response = await fetch("/api/comments", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            simulationId: simulation.id,
+            choiceId: selectedChoice,
+            author: generateRandomNickname(),
+            content: newComment,
+          }),
+        })
+
+        if (response.ok) {
+          const comment = await response.json()
+          setComments([comment, ...comments])
+          setNewComment("")
+        }
+      } catch (error) {
+        console.error("Failed to add comment:", error)
       }
-      setComments([comment, ...comments])
-      setNewComment("")
     }
   }
 

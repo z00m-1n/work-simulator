@@ -1,11 +1,11 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { mockSimulations } from "@/lib/mock-data"
+import { getSimulationById } from "@/lib/db"
 import { SimulationDetail } from "@/components/simulation-detail"
 
 export default async function SimulationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const simulation = mockSimulations.find((s) => s.id === id)
+  const simulation = getSimulationById(id)
 
   if (!simulation) {
     return (

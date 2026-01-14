@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { SimulationCard } from "@/components/simulation-card"
-import { categories, mockSimulations } from "@/lib/mock-data"
+import { categories } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import type { Simulation } from "@/lib/db"
 
 export function SimulationsContent() {
   const searchParams = useSearchParams()
@@ -14,6 +15,21 @@ export function SimulationsContent() {
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategory ? [initialCategory] : [])
   const [searchQuery, setSearchQuery] = useState("")
+  const [simulations, setSimulations] = useState<Simulation[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch("/api/simulations")
+      .then((res) => res.json())
+      .then((data) => {
+        setSimulations(data)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error("Failed to fetch simulations:", error)
+        setLoading(false)
+      })
+  }, [])
 
   const toggleCategory = (categoryId: string) => {
     setSelectedCategories((prev) => {
@@ -25,14 +41,14 @@ export function SimulationsContent() {
   }
 
   const filteredSimulations = useMemo(() => {
-    return mockSimulations.filter((sim) => {
-      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(sim.category)
+    return simulations.filter((sim) => {
+      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(sim.category as string)
       const matchesSearch =
         sim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sim.situation.toLowerCase().includes(searchQuery.toLowerCase())
       return matchesCategory && matchesSearch
     })
-  }, [selectedCategories, searchQuery])
+  }, [simulations, selectedCategories, searchQuery])
 
   return (
     <div className="min-h-screen py-8">
@@ -97,7 +113,11 @@ export function SimulationsContent() {
         </div>
 
         {/* Results */}
-        {filteredSimulations.length > 0 ? (
+        {loading ? (
+          <div className="py-20 text-center">
+            <p className="text-muted-foreground">로딩 중...</p>
+          </div>
+        ) : filteredSimulations.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredSimulations.map((simulation) => (
               <SimulationCard key={simulation.id} simulation={simulation} />

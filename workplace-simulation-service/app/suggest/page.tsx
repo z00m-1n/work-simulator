@@ -65,7 +65,34 @@ export default function SuggestPage() {
   }
 
   const handleSubmit = async () => {
-    setStep("submitted")
+    try {
+      const response = await fetch("/api/suggest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          category: selectedCategories[0], // 첫 번째 카테고리 사용
+          title: editedTitle,
+          situation: editedSituation,
+          choices: editedChoices,
+          aiRecommendation: "",
+          aiReasoning: "",
+          persona: {
+            position,
+            yearsOfExperience: parseInt(yearsOfExperience) || 0,
+          },
+        }),
+      })
+
+      if (response.ok) {
+        setStep("submitted")
+      } else {
+        console.error("Failed to submit suggestion")
+      }
+    } catch (error) {
+      console.error("Submit error:", error)
+    }
   }
 
   const handleReset = () => {
