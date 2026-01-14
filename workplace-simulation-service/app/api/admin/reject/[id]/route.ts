@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server"
 import { rejectSimulation } from "@/lib/db"
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const success = rejectSimulation(params.id)
+    const { id } = await params
+    const success = rejectSimulation(id)
     
     if (!success) {
       return NextResponse.json({ error: "Rejection failed" }, { status: 400 })

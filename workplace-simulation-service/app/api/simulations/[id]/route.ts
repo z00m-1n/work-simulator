@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server"
 import { getSimulationById } from "@/lib/db"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const simulation = getSimulationById(params.id)
+    const { id } = await params
+    const simulation = getSimulationById(id)
     
     if (!simulation) {
       return NextResponse.json({ error: "Simulation not found" }, { status: 404 })
