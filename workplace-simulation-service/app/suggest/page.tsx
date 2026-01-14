@@ -65,7 +65,38 @@ export default function SuggestPage() {
   }
 
   const handleSubmit = async () => {
-    setStep("submitted")
+    // localStorage에 제안된 시뮬레이션 저장
+    const newSimulation = {
+      id: `pending-${Date.now()}`,
+      category: selectedCategories[0] || "project",
+      title: editedTitle,
+      situation: editedSituation,
+      choices: editedChoices.map((choice) => ({
+        ...choice,
+        votes: 0,
+        votesByPosition: { intern: 0, staff: 0, senior: 0, manager: 0, director: 0 },
+      })),
+      comments: [],
+      aiRecommendation: "",
+      aiReasoning: "",
+      totalVotes: 0,
+      status: "pending" as const,
+      createdAt: new Date().toISOString().split("T")[0],
+      persona: {
+        position: position,
+        yearsOfExperience: parseInt(yearsOfExperience) || 1,
+      },
+    }
+
+    try {
+      const pendingSimulations = JSON.parse(localStorage.getItem("pendingSimulations") || "[]")
+      pendingSimulations.push(newSimulation)
+      localStorage.setItem("pendingSimulations", JSON.stringify(pendingSimulations))
+      setStep("submitted")
+    } catch (error) {
+      console.error("Failed to save simulation:", error)
+      alert("제출에 실패했습니다. 다시 시도해주세요.")
+    }
   }
 
   const handleReset = () => {

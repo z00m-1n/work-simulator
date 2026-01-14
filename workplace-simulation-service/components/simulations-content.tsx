@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,17 @@ export function SimulationsContent() {
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategory ? [initialCategory] : [])
   const [searchQuery, setSearchQuery] = useState("")
+  const [allSimulations, setAllSimulations] = useState(mockSimulations)
+
+  // localStorage에서 승인된 시뮬레이션 로드
+  useEffect(() => {
+    try {
+      const approvedSimulations = JSON.parse(localStorage.getItem("approvedSimulations") || "[]")
+      setAllSimulations([...mockSimulations, ...approvedSimulations])
+    } catch (error) {
+      console.error("Failed to load approved simulations:", error)
+    }
+  }, [])
 
   const toggleCategory = (categoryId: string) => {
     setSelectedCategories((prev) => {
@@ -25,14 +36,17 @@ export function SimulationsContent() {
   }
 
   const filteredSimulations = useMemo(() => {
-    return mockSimulations.filter((sim) => {
-      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(sim.category)
+    return allSimulations.filter((sim) => {
+      const matchesCategory = selectedCategories.length === 0 || 
+        (Array.isArray(sim.category) 
+          ? sim.category.some(cat => selectedCategories.includes(cat))
+          : selectedCategories.includes(sim.category))
       const matchesSearch =
         sim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sim.situation.toLowerCase().includes(searchQuery.toLowerCase())
       return matchesCategory && matchesSearch
     })
-  }, [selectedCategories, searchQuery])
+  }, [allSimulations, selectedCategories, searchQuery])
 
   return (
     <div className="min-h-screen py-8">

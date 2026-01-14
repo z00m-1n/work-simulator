@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,13 +14,32 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
-import { pendingSimulations, categories, type Simulation } from "@/lib/mock-data"
+import { categories, type Simulation } from "@/lib/mock-data"
+
+interface RejectedSimulation extends Simulation {
+  rejectReason: string
+  rejectedAt: string
+}
 
 export default function AdminPage() {
-  const [simulations, setSimulations] = useState(pendingSimulations)
+  const [simulations, setSimulations] = useState<Simulation[]>([])
+  const [rejectedSimulations, setRejectedSimulations] = useState<RejectedSimulation[]>([])
   const [selectedSimulation, setSelectedSimulation] = useState<Simulation | null>(null)
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
   const [rejectReason, setRejectReason] = useState("")
+
+  // localStorage에서 대기 중인 시뮬레이션 로드
+  useEffect(() => {
+    try {
+      const pending = JSON.parse(localStorage.getItem("pendingSimulations") || "[]")
+      setSimulations(pending)
+      
+      const rejected = JSON.parse(localStorage.getItem("rejectedSimulations") || "[]")
+      setRejectedSimulations(rejected)
+    } catch (error) {
+      console.error("Failed to load simulations:", error)
+    }
+  }, [])
 
   const handleAction = (simulation: Simulation, action: "approve" | "reject") => {
     setSelectedSimulation(simulation)
@@ -30,16 +49,48 @@ export default function AdminPage() {
   const confirmAction = () => {
     if (!selectedSimulation) return
 
-    setSimulations(simulations.filter((s) => s.id !== selectedSimulation.id))
-    setSelectedSimulation(null)
-    setActionType(null)
-    setRejectReason("")
+    try {
+      // 대기 목록에서 제거
+      const updatedPending = simulations.filter((s) => s.id !== selectedSimulation.id)
+      localStorage.setItem("pendingSimulations", JSON.stringify(updatedPending))
+      setSimulations(updatedPending)
+
+      if (actionType === "approve") {
+        // 승인된 시뮬레이션을 localStorage에 추가
+        const approvedSimulations = JSON.parse(localStorage.getItem("approvedSimulations") || "[]")
+        const approvedSimulation = {
+          ...selectedSimulation,
+          status: "active" as const,
+          id: `sim-${Date.now()}`, // 새로운 ID 할당
+        }
+        approvedSimulations.push(approvedSimulation)
+        localStorage.setItem("approvedSimulations", JSON.stringify(approvedSimulations))
+      } else if (actionType === "reject" && rejectReason.trim()) {
+        // 거절된 시뮬레이션을 localStorage에 추가
+        const rejectedSimulations = JSON.parse(localStorage.getItem("rejectedSimulations") || "[]")
+        const rejectedSimulation: RejectedSimulation = {
+          ...selectedSimulation,
+          rejectReason: rejectReason.trim(),
+          rejectedAt: new Date().toISOString().split("T")[0],
+        }
+        rejectedSimulations.push(rejectedSimulation)
+        localStorage.setItem("rejectedSimulations", JSON.stringify(rejectedSimulations))
+        setRejectedSimulations(rejectedSimulations)
+      }
+
+      setSelectedSimulation(null)
+      setActionType(null)
+      setRejectReason("")
+    } catch (error) {
+      console.error("Failed to process simulation:", error)
+      alert("처리에 실패했습니다. 다시 시도해주세요.")
+    }
   }
 
   const stats = {
     pending: simulations.length,
-    approved: 47,
-    rejected: 12,
+    approved: typeof window !== "undefined" ? JSON.parse(localStorage.getItem("approvedSimulations") || "[]").length : 0,
+    rejected: rejectedSimulations.length,
   }
 
   return (
@@ -203,67 +254,52 @@ export default function AdminPage() {
           <TabsContent value="history" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>최근 처리 내역</CardTitle>
-                <CardDescription>지난 7일간 처리된 상담 케이스</CardDescription>
+                <CardTitle>거절된 상담 케이스</CardTitle>
+                <CardDescription>거절 사유와 함께 확인할 수 있습니다</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {[
-                    { title: "급한 퇴근 요청에 대한 상사의 추가 업무 지시", status: "approved", date: "2024-01-15" },
-                    { title: "프로젝트 일정 지연에 대한 책임 소재", status: "approved", date: "2024-01-14" },
-                    { title: "부적절한 내용 포함된 제안", status: "rejected", date: "2024-01-14" },
-                    { title: "고객사의 무리한 요구사항 변경", status: "approved", date: "2024-01-13" },
-                    { title: "동료의 업무 실수를 발견했을 때", status: "approved", date: "2024-01-12" },
-                  ].map((item, index) => (
-                    <div key={index} className="flex items-center justify-between py-3 border-b last:border-0">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                            item.status === "approved" ? "bg-emerald-500/10" : "bg-destructive/10"
-                          }`}
-                        >
-                          {item.status === "approved" ? (
-                            <svg
-                              className="h-4 w-4 text-emerald-500"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : (
-                            <svg
-                              className="h-4 w-4 text-destructive"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          )}
+                {rejectedSimulations.length > 0 ? (
+                  <div className="space-y-4">
+                    {rejectedSimulations.map((item) => (
+                      <div key={item.id} className="border rounded-lg p-4 space-y-2">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10">
+                              <svg
+                                className="h-4 w-4 text-destructive"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-foreground text-sm">{item.title}</p>
+                              <p className="text-xs text-muted-foreground">{item.rejectedAt}에 거절됨</p>
+                            </div>
+                          </div>
+                          <Badge className="bg-destructive/10 text-destructive hover:bg-destructive/20">
+                            거절됨
+                          </Badge>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground text-sm">{item.title}</p>
-                          <p className="text-xs text-muted-foreground">{item.date}</p>
+                        <div className="ml-11 p-3 bg-muted/50 rounded-md">
+                          <p className="text-xs font-medium text-muted-foreground mb-1">거절 사유</p>
+                          <p className="text-sm text-foreground">{item.rejectReason}</p>
                         </div>
                       </div>
-                      <Badge
-                        className={
-                          item.status === "approved"
-                            ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20"
-                            : "bg-destructive/10 text-destructive hover:bg-destructive/20"
-                        }
-                      >
-                        {item.status === "approved" ? "승인됨" : "거절됨"}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-8 text-center text-muted-foreground">
+                    거절된 케이스가 없습니다.
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
