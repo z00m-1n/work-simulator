@@ -32,6 +32,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true)
   const [approvedCount, setApprovedCount] = useState(12)
   const [rejectedCount, setRejectedCount] = useState(2)
+  const [history, setHistory] = useState<Array<{id: string, title: string, status: string, date: string}>>([])
 
   useEffect(() => {
     // localStorage에서 카운트 로드
@@ -52,6 +53,12 @@ export default function AdminPage() {
       // 초기값 설정
       localStorage.setItem("admin_rejected_count", "2")
       setRejectedCount(2)
+    }
+    
+    // 처리 내역 로드
+    const savedHistory = localStorage.getItem("admin_history")
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory))
     }
     
     setLoading(false)
@@ -121,6 +128,17 @@ export default function AdminPage() {
           setRejectedCount(newCount)
           localStorage.setItem("admin_rejected_count", newCount.toString())
         }
+        
+        // 처리 내역에 추가
+        const newHistoryItem = {
+          id: selectedSimulation.id,
+          title: selectedSimulation.title,
+          status: actionType === "approve" ? "approved" : "rejected",
+          date: new Date().toISOString().split('T')[0]
+        }
+        const updatedHistory = [newHistoryItem, ...history].slice(0, 20) // 최근 20개만 유지
+        setHistory(updatedHistory)
+        localStorage.setItem("admin_history", JSON.stringify(updatedHistory))
         
         setSelectedSimulation(null)
         setActionType(null)
@@ -253,16 +271,23 @@ export default function AdminPage() {
             {simulations.length > 0 ? (
               <div className="space-y-4">
                 {simulations.map((simulation) => {
-                  const category = categories.find((c) => c.id === simulation.category)
+                  // 카테고리가 배열이거나 단일 값일 수 있음
+                  const categoryIds = Array.isArray(simulation.category) ? simulation.category : [simulation.category]
+                  const simulationCategories = categoryIds
+                    .map((id) => categories.find((c) => c.id === id))
+                    .filter((c) => c !== undefined)
+                  
                   return (
                     <Card key={simulation.id}>
                       <CardHeader>
                         <div className="flex items-start justify-between gap-4">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <Badge variant="secondary">
-                                {category?.icon} {category?.name}
-                              </Badge>
+                              {simulationCategories.map((category) => (
+                                <Badge key={category.id} variant="secondary">
+                                  {category.icon} {category.name}
+                                </Badge>
+                              ))}
                               <Badge variant="outline">{simulation.persona.position}</Badge>
                               <Badge variant="outline">{simulation.persona.yearsOfExperience}년차</Badge>
                               <Badge className="bg-amber-500/10 text-amber-600 hover:bg-amber-500/20">대기 중</Badge>
@@ -342,17 +367,12 @@ export default function AdminPage() {
             <Card>
               <CardHeader>
                 <CardTitle>최근 처리 내역</CardTitle>
-                <CardDescription>지난 7일간 처리된 상담 케이스</CardDescription>
+                <CardDescription>처리된 상담 케이스 (최신순)</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {[
-                    { title: "급한 퇴근 요청에 대한 상사의 추가 업무 지시", status: "approved", date: "2024-01-15" },
-                    { title: "프로젝트 일정 지연에 대한 책임 소재", status: "approved", date: "2024-01-14" },
-                    { title: "부적절한 내용 포함된 제안", status: "rejected", date: "2024-01-14" },
-                    { title: "고객사의 무리한 요구사항 변경", status: "approved", date: "2024-01-13" },
-                    { title: "동료의 업무 실수를 발견했을 때", status: "approved", date: "2024-01-12" },
-                  ].map((item, index) => (
+                {history.length > 0 ? (
+                  <div className="space-y-4">
+                    {history.map((item, index) => (
                     <div key={index} className="flex items-center justify-between py-3 border-b last:border-0">
                       <div className="flex items-center gap-3">
                         <div
@@ -402,6 +422,11 @@ export default function AdminPage() {
                     </div>
                   ))}
                 </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">
+                    아직 처리된 케이스가 없습니다.
+                  </p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
