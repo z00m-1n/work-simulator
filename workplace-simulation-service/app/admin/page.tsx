@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Dialog,
   DialogContent,
@@ -14,40 +16,213 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
-import { pendingSimulations, categories, type Simulation } from "@/lib/mock-data"
+import { categories } from "@/lib/mock-data"
+import type { Simulation } from "@/lib/db"
+
+const ADMIN_PASSWORD = "0000"
 
 export default function AdminPage() {
-  const [simulations, setSimulations] = useState(pendingSimulations)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [password, setPassword] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [simulations, setSimulations] = useState<Simulation[]>([])
   const [selectedSimulation, setSelectedSimulation] = useState<Simulation | null>(null)
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
   const [rejectReason, setRejectReason] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [approvedCount, setApprovedCount] = useState(12)
+  const [rejectedCount, setRejectedCount] = useState(2)
+  const [history, setHistory] = useState<Array<{id: string, title: string, status: string, date: string}>>([])
+
+  useEffect(() => {
+    // localStorage에서 카운트 로드
+    const savedApprovedCount = localStorage.getItem("admin_approved_count")
+    const savedRejectedCount = localStorage.getItem("admin_rejected_count")
+    
+    if (savedApprovedCount) {
+      setApprovedCount(parseInt(savedApprovedCount))
+    } else {
+      // 초기값 설정
+      localStorage.setItem("admin_approved_count", "12")
+      setApprovedCount(12)
+    }
+    
+    if (savedRejectedCount) {
+      setRejectedCount(parseInt(savedRejectedCount))
+    } else {
+      // 초기값 설정
+      localStorage.setItem("admin_rejected_count", "2")
+      setRejectedCount(2)
+    }
+    
+    // 처리 내역 로드 또는 초기화
+    const savedHistory = localStorage.getItem("admin_history")
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory))
+    } else {
+      // 초기 처리 내역을 서버에서 가져와서 설정
+      fetch("/api/simulations")
+        .then(res => res.json())
+        .then(data => {
+          // approvedAt이 있는 시뮬레이션들을 처리 내역으로 변환
+          const initialHistory = data
+            .filter((sim: any) => sim.approvedAt)
+            .sort((a: any, b: any) => new Date(b.approvedAt).getTime() - new Date(a.approvedAt).getTime())
+            .map((sim: any) => ({
+              id: sim.id,
+              title: sim.title,
+              status: "approved",
+              date: sim.approvedAt.split('T')[0]
+            }))
+          setHistory(initialHistory)
+          localStorage.setItem("admin_history", JSON.stringify(initialHistory))
+        })
+        .catch(err => console.error("Failed to load initial history:", err))
+    }
+    
+    setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadPendingSimulations()
+    }
+  }, [isAuthenticated])
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true)
+      setPasswordError("")
+    } else {
+      setPasswordError("비밀번호가 올바르지 않습니다.")
+    }
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    setPassword("")
+  }
+
+  const loadPendingSimulations = async () => {
+    try {
+      const response = await fetch("/api/admin/pending")
+      const data = await response.json()
+      setSimulations(data)
+    } catch (error) {
+      console.error("Failed to load pending simulations:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleAction = (simulation: Simulation, action: "approve" | "reject") => {
     setSelectedSimulation(simulation)
     setActionType(action)
   }
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     if (!selectedSimulation) return
 
-    setSimulations(simulations.filter((s) => s.id !== selectedSimulation.id))
-    setSelectedSimulation(null)
-    setActionType(null)
-    setRejectReason("")
+    try {
+      const endpoint =
+        actionType === "approve"
+          ? `/api/admin/approve/${selectedSimulation.id}`
+          : `/api/admin/reject/${selectedSimulation.id}`
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+      })
+
+      if (response.ok) {
+        setSimulations(simulations.filter((s) => s.id !== selectedSimulation.id))
+        
+        // 승인/거절 카운트 증가 및 localStorage에 저장
+        if (actionType === "approve") {
+          const newCount = approvedCount + 1
+          setApprovedCount(newCount)
+          localStorage.setItem("admin_approved_count", newCount.toString())
+        } else {
+          const newCount = rejectedCount + 1
+          setRejectedCount(newCount)
+          localStorage.setItem("admin_rejected_count", newCount.toString())
+        }
+        
+        // 처리 내역에 추가
+        const newHistoryItem = {
+          id: selectedSimulation.id,
+          title: selectedSimulation.title,
+          status: actionType === "approve" ? "approved" : "rejected",
+          date: new Date().toISOString().split('T')[0]
+        }
+        const updatedHistory = [newHistoryItem, ...history].slice(0, 20) // 최근 20개만 유지
+        setHistory(updatedHistory)
+        localStorage.setItem("admin_history", JSON.stringify(updatedHistory))
+        
+        setSelectedSimulation(null)
+        setActionType(null)
+        setRejectReason("")
+      }
+    } catch (error) {
+      console.error("Action failed:", error)
+    }
   }
 
   const stats = {
     pending: simulations.length,
-    approved: 47,
-    rejected: 12,
+    approved: approvedCount,
+    rejected: rejectedCount,
+  }
+
+  // 로그인 화면
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl">관리자 로그인</CardTitle>
+            <CardDescription>관리자 페이지에 접근하려면 비밀번호를 입력하세요.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="password">비밀번호</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="비밀번호를 입력하세요"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    setPasswordError("")
+                  }}
+                  className={passwordError ? "border-red-500" : ""}
+                />
+                {passwordError && (
+                  <p className="text-sm text-red-500">{passwordError}</p>
+                )}
+              </div>
+              <Button type="submit" className="w-full">
+                로그인
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto max-w-7xl px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">관리자 대시보드</h1>
-          <p className="mt-2 text-muted-foreground">제안된 상담 케이스를 검토하고 승인/거절합니다.</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">관리자 대시보드</h1>
+            <p className="mt-2 text-muted-foreground">제안된 상담 케이스를 검토하고 승인/거절합니다.</p>
+          </div>
+          <Button variant="outline" onClick={handleLogout}>
+            로그아웃
+          </Button>
         </div>
 
         {/* Stats */}
@@ -115,16 +290,23 @@ export default function AdminPage() {
             {simulations.length > 0 ? (
               <div className="space-y-4">
                 {simulations.map((simulation) => {
-                  const category = categories.find((c) => c.id === simulation.category)
+                  // 카테고리가 배열이거나 단일 값일 수 있음
+                  const categoryIds = Array.isArray(simulation.category) ? simulation.category : [simulation.category]
+                  const simulationCategories = categoryIds
+                    .map((id) => categories.find((c) => c.id === id))
+                    .filter((c) => c !== undefined)
+                  
                   return (
                     <Card key={simulation.id}>
                       <CardHeader>
                         <div className="flex items-start justify-between gap-4">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <Badge variant="secondary">
-                                {category?.icon} {category?.name}
-                              </Badge>
+                              {simulationCategories.map((category) => (
+                                <Badge key={category.id} variant="secondary">
+                                  {category.icon} {category.name}
+                                </Badge>
+                              ))}
                               <Badge variant="outline">{simulation.persona.position}</Badge>
                               <Badge variant="outline">{simulation.persona.yearsOfExperience}년차</Badge>
                               <Badge className="bg-amber-500/10 text-amber-600 hover:bg-amber-500/20">대기 중</Badge>
@@ -204,17 +386,12 @@ export default function AdminPage() {
             <Card>
               <CardHeader>
                 <CardTitle>최근 처리 내역</CardTitle>
-                <CardDescription>지난 7일간 처리된 상담 케이스</CardDescription>
+                <CardDescription>처리된 상담 케이스 (최신순)</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {[
-                    { title: "급한 퇴근 요청에 대한 상사의 추가 업무 지시", status: "approved", date: "2024-01-15" },
-                    { title: "프로젝트 일정 지연에 대한 책임 소재", status: "approved", date: "2024-01-14" },
-                    { title: "부적절한 내용 포함된 제안", status: "rejected", date: "2024-01-14" },
-                    { title: "고객사의 무리한 요구사항 변경", status: "approved", date: "2024-01-13" },
-                    { title: "동료의 업무 실수를 발견했을 때", status: "approved", date: "2024-01-12" },
-                  ].map((item, index) => (
+                {history.length > 0 ? (
+                  <div className="space-y-4">
+                    {history.map((item, index) => (
                     <div key={index} className="flex items-center justify-between py-3 border-b last:border-0">
                       <div className="flex items-center gap-3">
                         <div
@@ -264,6 +441,11 @@ export default function AdminPage() {
                     </div>
                   ))}
                 </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">
+                    아직 처리된 케이스가 없습니다.
+                  </p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -306,7 +488,7 @@ export default function AdminPage() {
               <Button
                 onClick={confirmAction}
                 className={
-                  actionType === "reject" ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""
+                  actionType === "reject" ? "bg-destructive text-white hover:bg-destructive/90" : ""
                 }
                 disabled={actionType === "reject" && !rejectReason.trim()}
               >

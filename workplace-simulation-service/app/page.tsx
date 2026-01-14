@@ -2,9 +2,10 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SimulationCard } from "@/components/simulation-card"
-import { mockSimulations } from "@/lib/mock-data"
+import { getApprovedSimulations } from "@/lib/db"
 
 export default function HomePage() {
+  const mockSimulations = getApprovedSimulations()
   const popularSimulations = [...mockSimulations].sort((a, b) => b.totalVotes - a.totalVotes).slice(0, 3)
 
   return (
@@ -57,30 +58,6 @@ export default function HomePage() {
             {popularSimulations.map((simulation) => (
               <SimulationCard key={simulation.id} simulation={simulation} />
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="border-y border-border bg-background py-12">
-        <div className="container mx-auto max-w-7xl px-4">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">5,234</div>
-              <div className="mt-1 text-sm text-muted-foreground">총 참여자</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{mockSimulations.length}</div>
-              <div className="mt-1 text-sm text-muted-foreground">상담 케이스</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">1,847</div>
-              <div className="mt-1 text-sm text-muted-foreground">토론 댓글</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">94%</div>
-              <div className="mt-1 text-sm text-muted-foreground">만족도</div>
-            </div>
           </div>
         </div>
       </section>

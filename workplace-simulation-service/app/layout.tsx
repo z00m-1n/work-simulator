@@ -12,23 +12,6 @@ export const metadata: Metadata = {
   title: "슬기로운 회사생활 - 업무 상황 시뮬레이션",
   description: "실제 업무 상황을 시뮬레이션하고 동료들과 토론하세요. AI 추천 답변도 확인할 수 있습니다.",
   generator: "v0.app",
-  icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
-  },
 }
 
 export default function RootLayout({

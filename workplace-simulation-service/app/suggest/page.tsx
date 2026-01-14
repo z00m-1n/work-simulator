@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { categories, positions } from "@/lib/mock-data"
+import { categories } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
 type Step = "input" | "processing" | "preview" | "submitted"
@@ -23,8 +23,6 @@ export default function SuggestPage() {
   const [step, setStep] = useState<Step>("input")
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [situation, setSituation] = useState("")
-  const [position, setPosition] = useState("")
-  const [yearsOfExperience, setYearsOfExperience] = useState("")
   const [generatedSimulation, setGeneratedSimulation] = useState<GeneratedSimulation | null>(null)
   const [editedTitle, setEditedTitle] = useState("")
   const [editedSituation, setEditedSituation] = useState("")
@@ -40,40 +38,78 @@ export default function SuggestPage() {
   }
 
   const handleGenerate = async () => {
-    if (selectedCategories.length === 0 || !situation.trim() || !position) return
+    if (selectedCategories.length === 0 || !situation.trim()) return
 
     setStep("processing")
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      const response = await fetch("/api/ai/refine", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          categories: selectedCategories,
+          situation,
+          position: "사원",
+          yearsOfExperience: "1",
+        }),
+      })
 
-    const generated = {
-      title: "팀 미팅에서 다른 의견을 제시해야 할 때",
-      situation: `팀 미팅에서 상사가 제안한 방향에 대해 다른 의견이 있습니다. 당신의 의견이 프로젝트에 더 좋은 결과를 가져올 수 있다고 확신하지만, 분위기상 반대 의견을 내기가 조심스럽습니다. 어떻게 대응하시겠습니까?`,
-      choices: [
-        { id: "a", text: "미팅 중 정중하게 의견을 제시한다" },
-        { id: "b", text: "미팅 후 상사에게 따로 말씀드린다" },
-        { id: "c", text: "동료에게 먼저 의견을 공유하고 함께 제안한다" },
-        { id: "d", text: "일단 상사의 의견을 따른다" },
-      ],
+      if (!response.ok) {
+        throw new Error("AI 생성 실패")
+      }
+
+      const generated = await response.json()
+
+      setGeneratedSimulation(generated)
+      setEditedTitle(generated.title)
+      setEditedSituation(generated.situation)
+      setEditedChoices([...generated.choices])
+      setStep("preview")
+    } catch (error) {
+      console.error("AI generation failed:", error)
+      // 에러 발생 시 입력 단계로 돌아가기
+      alert("AI 다듬기에 실패했습니다. 다시 시도해주세요.")
+      setStep("input")
     }
-
-    setGeneratedSimulation(generated)
-    setEditedTitle(generated.title)
-    setEditedSituation(generated.situation)
-    setEditedChoices([...generated.choices])
-    setStep("preview")
   }
 
   const handleSubmit = async () => {
-    setStep("submitted")
+    try {
+      const response = await fetch("/api/suggest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          category: selectedCategories.length > 1 ? selectedCategories : selectedCategories[0],
+          title: editedTitle,
+          situation: editedSituation,
+          choices: editedChoices,
+          aiRecommendation: "",
+          aiReasoning: "",
+          persona: {
+            position: "사원",
+            yearsOfExperience: 1,
+          },
+        }),
+      })
+
+      if (response.ok) {
+        setStep("submitted")
+      } else {
+        console.error("Failed to submit suggestion")
+      }
+    } catch (error) {
+      console.error("Submit error:", error)
+    }
   }
 
   const handleReset = () => {
     setStep("input")
     setSelectedCategories([])
     setSituation("")
-    setPosition("")
-    setYearsOfExperience("")
     setGeneratedSimulation(null)
     setEditedTitle("")
     setEditedSituation("")
@@ -164,35 +200,6 @@ export default function SuggestPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="position">해당 상황의 직급</Label>
-                <Select value={position} onValueChange={setPosition}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="직급을 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {positions.map((pos) => (
-                      <SelectItem key={pos.id} value={pos.name}>
-                        {pos.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="years">경력 (년차)</Label>
-                <Input
-                  id="years"
-                  type="number"
-                  min="1"
-                  max="30"
-                  placeholder="예: 3"
-                  value={yearsOfExperience}
-                  onChange={(e) => setYearsOfExperience(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="situation">상황 설명</Label>
                 <Textarea
                   id="situation"
@@ -208,7 +215,7 @@ export default function SuggestPage() {
 
               <Button
                 onClick={handleGenerate}
-                disabled={selectedCategories.length === 0 || !situation.trim() || !position}
+                disabled={selectedCategories.length === 0 || !situation.trim()}
                 className="w-full"
               >
                 AI로 시뮬레이션 생성하기
@@ -259,14 +266,6 @@ export default function SuggestPage() {
                 <div className="space-y-2">
                   <Label className="text-muted-foreground">제목</Label>
                   <Input value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} className="font-medium" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground">페르소나</Label>
-                  <div className="flex gap-2">
-                    <Badge variant="outline">{position}</Badge>
-                    {yearsOfExperience && <Badge variant="outline">{yearsOfExperience}년차</Badge>}
-                  </div>
                 </div>
 
                 <div className="space-y-2">

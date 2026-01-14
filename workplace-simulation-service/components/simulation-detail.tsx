@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -158,27 +158,70 @@ function CommentItem({
   )
 }
 
-export function SimulationDetail({ simulation }: { simulation: Simulation }) {
+export function SimulationDetail({ simulation: initialSimulation }: { simulation: Simulation }) {
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null)
   const [hasVoted, setHasVoted] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [newComment, setNewComment] = useState("")
-  const [comments, setComments] = useState<Comment[]>(simulation.comments)
+  const [comments, setComments] = useState<Comment[]>(initialSimulation.comments)
   const [positionFilter, setPositionFilter] = useState<string>("all")
+  const [simulation, setSimulation] = useState(initialSimulation)
+  const [voting, setVoting] = useState(false)
 
-  const category = categories.find((c) => c.id === simulation.category)
-  const totalVotes = simulation.choices.reduce((acc, c) => acc + c.votes, 0) + (hasVoted ? 1 : 0)
-
-  const handleVote = () => {
-    if (selectedChoice) {
+  // 투표 기록 확인 및 로드
+  useEffect(() => {
+    const voteKey = `vote_${simulation.id}`
+    const savedVote = localStorage.getItem(voteKey)
+    
+    if (savedVote) {
+      setSelectedChoice(savedVote)
       setHasVoted(true)
       setShowResults(true)
+    }
+  }, [simulation.id])
+
+  const category = categories.find((c) => c.id === simulation.category)
+  const totalVotes = simulation.totalVotes
+
+  const handleVote = async () => {
+    if (selectedChoice && !voting) {
+      setVoting(true)
+      try {
+        const response = await fetch("/api/vote", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            simulationId: simulation.id,
+            choiceId: selectedChoice,
+            position: positionFilter !== "all" ? positionFilter : undefined,
+          }),
+        })
+
+        if (response.ok) {
+          // 업데이트된 시뮬레이션 데이터 가져오기
+          const simResponse = await fetch(`/api/simulations/${simulation.id}`)
+          const updatedSim = await simResponse.json()
+          setSimulation(updatedSim)
+          setHasVoted(true)
+          setShowResults(true)
+          
+          // localStorage에 투표 기록 저장
+          const voteKey = `vote_${simulation.id}`
+          localStorage.setItem(voteKey, selectedChoice)
+        }
+      } catch (error) {
+        console.error("Vote failed:", error)
+      } finally {
+        setVoting(false)
+      }
     }
   }
 
   const getVotePercentage = (choice: Choice) => {
     if (positionFilter === "all") {
-      const votes = choice.votes + (hasVoted && selectedChoice === choice.id ? 1 : 0)
+      const votes = choice.votes
       return totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0
     } else {
       const positionVotes = choice.votesByPosition?.[positionFilter as keyof typeof choice.votesByPosition] || 0
@@ -192,24 +235,35 @@ export function SimulationDetail({ simulation }: { simulation: Simulation }) {
 
   const getVoteCount = (choice: Choice) => {
     if (positionFilter === "all") {
-      return choice.votes + (hasVoted && selectedChoice === choice.id ? 1 : 0)
+      return choice.votes
     }
     return choice.votesByPosition?.[positionFilter as keyof typeof choice.votesByPosition] || 0
   }
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim() && selectedChoice) {
-      const comment: Comment = {
-        id: `new-${Date.now()}`,
-        author: generateRandomNickname(),
-        choiceId: selectedChoice,
-        content: newComment,
-        timestamp: "방금 전",
-        likes: 0,
-        replies: [],
+      try {
+        const response = await fetch("/api/comments", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            simulationId: simulation.id,
+            choiceId: selectedChoice,
+            author: generateRandomNickname(),
+            content: newComment,
+          }),
+        })
+
+        if (response.ok) {
+          const comment = await response.json()
+          setComments([comment, ...comments])
+          setNewComment("")
+        }
+      } catch (error) {
+        console.error("Failed to add comment:", error)
       }
-      setComments([comment, ...comments])
-      setNewComment("")
     }
   }
 
@@ -264,6 +318,18 @@ export function SimulationDetail({ simulation }: { simulation: Simulation }) {
   const totalCommentCount = getTotalCommentCount(comments)
   const choiceLabels = ["A", "B", "C", "D", "E", "F"]
 
+  // AI 추천 선택지를 레이블로 변환
+  const getRecommendationLabel = () => {
+    const recommendedIndex = simulation.choices.findIndex((c) => c.id === simulation.aiRecommendation)
+    return recommendedIndex !== -1 ? `${choiceLabels[recommendedIndex]}안` : simulation.aiRecommendation
+  }
+
+  // 카테고리 배열 처리
+  const categoryIds = Array.isArray(simulation.category) ? simulation.category : [simulation.category]
+  const simulationCategories = categoryIds
+    .map((id) => categories.find((c) => c.id === id))
+    .filter((c) => c !== undefined)
+
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto max-w-4xl px-4">
@@ -278,11 +344,12 @@ export function SimulationDetail({ simulation }: { simulation: Simulation }) {
 
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <Badge variant="secondary">
-              {category?.icon} {category?.name}
-            </Badge>
-            <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20">진행중</Badge>
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            {simulationCategories.map((category) => (
+              <Badge key={category.id} variant="secondary">
+                {category.icon} {category.name}
+              </Badge>
+            ))}
           </div>
           <h1 className="text-2xl font-bold text-foreground sm:text-3xl text-balance">{simulation.title}</h1>
           <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
@@ -297,14 +364,6 @@ export function SimulationDetail({ simulation }: { simulation: Simulation }) {
             <CardTitle className="text-lg">상황 설명</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 flex items-center gap-2">
-              <Badge variant="outline" className="bg-muted/50">
-                {simulation.persona.position}
-              </Badge>
-              <Badge variant="outline" className="bg-muted/50">
-                {simulation.persona.yearsOfExperience}년차
-              </Badge>
-            </div>
             <p className="text-foreground leading-relaxed">{simulation.situation}</p>
           </CardContent>
         </Card>
@@ -509,7 +568,7 @@ export function SimulationDetail({ simulation }: { simulation: Simulation }) {
                 </CardHeader>
                 <CardContent>
                   <div className="rounded-lg bg-background p-4 mb-4">
-                    <p className="font-semibold text-primary">{simulation.aiRecommendation}</p>
+                    <p className="font-semibold text-primary">{getRecommendationLabel()}</p>
                   </div>
                   <div className="mb-4">
                     <h4 className="font-medium text-foreground mb-2">추천 이유</h4>
