@@ -23,8 +23,6 @@ export default function SuggestPage() {
   const [step, setStep] = useState<Step>("input")
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [situation, setSituation] = useState("")
-  const [position, setPosition] = useState("")
-  const [yearsOfExperience, setYearsOfExperience] = useState("")
   const [generatedSimulation, setGeneratedSimulation] = useState<GeneratedSimulation | null>(null)
   const [editedTitle, setEditedTitle] = useState("")
   const [editedSituation, setEditedSituation] = useState("")
@@ -40,7 +38,7 @@ export default function SuggestPage() {
   }
 
   const handleGenerate = async () => {
-    if (selectedCategories.length === 0 || !situation.trim() || !position) return
+    if (selectedCategories.length === 0 || !situation.trim()) return
 
     setStep("processing")
 
@@ -53,8 +51,8 @@ export default function SuggestPage() {
         body: JSON.stringify({
           categories: selectedCategories,
           situation,
-          position,
-          yearsOfExperience,
+          position: "사원",
+          yearsOfExperience: "1",
         }),
       })
 
@@ -92,8 +90,8 @@ export default function SuggestPage() {
           aiRecommendation: "",
           aiReasoning: "",
           persona: {
-            position,
-            yearsOfExperience: parseInt(yearsOfExperience) || 0,
+            position: "사원",
+            yearsOfExperience: 1,
           },
         }),
       })
@@ -112,8 +110,6 @@ export default function SuggestPage() {
     setStep("input")
     setSelectedCategories([])
     setSituation("")
-    setPosition("")
-    setYearsOfExperience("")
     setGeneratedSimulation(null)
     setEditedTitle("")
     setEditedSituation("")
@@ -204,35 +200,6 @@ export default function SuggestPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="position">해당 상황의 직급</Label>
-                <Select value={position} onValueChange={setPosition}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="직급을 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {positions.map((pos) => (
-                      <SelectItem key={pos.id} value={pos.name}>
-                        {pos.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="years">경력 (년차)</Label>
-                <Input
-                  id="years"
-                  type="number"
-                  min="1"
-                  max="30"
-                  placeholder="예: 3"
-                  value={yearsOfExperience}
-                  onChange={(e) => setYearsOfExperience(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="situation">상황 설명</Label>
                 <Textarea
                   id="situation"
@@ -248,7 +215,7 @@ export default function SuggestPage() {
 
               <Button
                 onClick={handleGenerate}
-                disabled={selectedCategories.length === 0 || !situation.trim() || !position}
+                disabled={selectedCategories.length === 0 || !situation.trim()}
                 className="w-full"
               >
                 AI로 시뮬레이션 생성하기
