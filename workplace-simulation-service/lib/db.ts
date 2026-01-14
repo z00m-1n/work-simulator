@@ -41,6 +41,7 @@ export interface Simulation {
   totalVotes: number
   status: "active" | "pending" | "closed"
   createdAt: string
+  approvedAt?: string
   persona: Persona
 }
 
@@ -132,6 +133,7 @@ export function approveSimulation(id: string): boolean {
   
   const simulation = db.pendingSimulations[index]
   simulation.status = "active"
+  simulation.approvedAt = new Date().toISOString()
   
   db.simulations.push(simulation)
   db.pendingSimulations.splice(index, 1)

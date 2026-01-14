@@ -74,6 +74,7 @@
       "totalVotes": 107,
       "status": "active",
       "createdAt": "2026-01-10T09:00:00.000Z",
+      "approvedAt": "2026-01-10T10:00:00.000Z",
       "persona": {
         "position": "사원",
         "yearsOfExperience": 2
@@ -143,6 +144,7 @@
       "totalVotes": 103,
       "status": "active",
       "createdAt": "2026-01-11T10:30:00.000Z",
+      "approvedAt": "2026-01-11T11:00:00.000Z",
       "persona": {
         "position": "대리",
         "yearsOfExperience": 4
@@ -212,6 +214,7 @@
       "totalVotes": 107,
       "status": "active",
       "createdAt": "2026-01-12T14:20:00.000Z",
+      "approvedAt": "2026-01-12T15:00:00.000Z",
       "persona": {
         "position": "과장",
         "yearsOfExperience": 7
@@ -280,6 +283,7 @@
       "id": "1768365095681",
       "status": "active",
       "createdAt": "2026-01-14T04:31:35.681Z",
+      "approvedAt": "2026-01-13T09:00:00.000Z",
       "totalVotes": 1,
       "comments": []
     },
@@ -346,6 +350,7 @@
       "id": "1768365407409",
       "status": "active",
       "createdAt": "2026-01-14T04:36:47.409Z",
+      "approvedAt": "2026-01-13T10:00:00.000Z",
       "totalVotes": 2,
       "comments": [
         {
@@ -422,6 +427,7 @@
       "id": "1768366190126",
       "status": "active",
       "createdAt": "2026-01-14T04:49:50.127Z",
+      "approvedAt": "2026-01-13T11:00:00.000Z",
       "totalVotes": 1,
       "comments": []
     },
@@ -488,6 +494,7 @@
       "id": "1768366341743",
       "status": "active",
       "createdAt": "2026-01-14T04:52:21.744Z",
+      "approvedAt": "2026-01-13T12:00:00.000Z",
       "totalVotes": 0,
       "comments": []
     },
@@ -557,6 +564,7 @@
       "id": "1768366519604",
       "status": "active",
       "createdAt": "2026-01-14T04:55:19.604Z",
+      "approvedAt": "2026-01-13T13:00:00.000Z",
       "totalVotes": 0,
       "comments": []
     }

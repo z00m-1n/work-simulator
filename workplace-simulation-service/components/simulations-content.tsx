@@ -41,7 +41,7 @@ export function SimulationsContent() {
   }
 
   const filteredSimulations = useMemo(() => {
-    return simulations.filter((sim) => {
+    const filtered = simulations.filter((sim) => {
       // 카테고리 매칭 (배열 또는 단일 값 처리)
       const simCategories = Array.isArray(sim.category) ? sim.category : [sim.category]
       const matchesCategory = selectedCategories.length === 0 || 
@@ -51,6 +51,13 @@ export function SimulationsContent() {
         sim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sim.situation.toLowerCase().includes(searchQuery.toLowerCase())
       return matchesCategory && matchesSearch
+    })
+    
+    // approvedAt 기준으로 내림차순 정렬 (최신순)
+    return filtered.sort((a, b) => {
+      const dateA = a.approvedAt ? new Date(a.approvedAt).getTime() : 0
+      const dateB = b.approvedAt ? new Date(b.approvedAt).getTime() : 0
+      return dateB - dateA
     })
   }, [simulations, selectedCategories, searchQuery])
 

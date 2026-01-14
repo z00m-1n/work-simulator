@@ -16,6 +16,22 @@ export function SimulationCard({ simulation }: SimulationCardProps) {
     .filter((c) => c !== undefined)
   
   const totalVotes = simulation.totalVotes || simulation.choices.reduce((acc, c) => acc + c.votes, 0)
+  
+  // 승인 시간 포맷팅
+  const formatApprovedDate = (dateString: string | undefined) => {
+    if (!dateString) return null
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+    const diffDays = Math.floor(diffHours / 24)
+    
+    if (diffHours < 1) return "방금 전"
+    if (diffHours < 24) return `${diffHours}시간 전`
+    if (diffDays < 7) return `${diffDays}일 전`
+    
+    return date.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' })
+  }
 
   return (
     <Link href={`/simulations/${simulation.id}`}>
@@ -37,7 +53,20 @@ export function SimulationCard({ simulation }: SimulationCardProps) {
           <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{simulation.situation}</p>
         </CardContent>
         <CardFooter className="px-6 pb-6 pt-0">
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+            {simulation.approvedAt && (
+              <span className="flex items-center gap-1">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {formatApprovedDate(simulation.approvedAt)}
+              </span>
+            )}
             <span className="flex items-center gap-1">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
