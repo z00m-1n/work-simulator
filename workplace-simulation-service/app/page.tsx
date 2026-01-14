@@ -2,9 +2,10 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SimulationCard } from "@/components/simulation-card"
-import { mockSimulations } from "@/lib/mock-data"
+import { getApprovedSimulations } from "@/lib/db"
 
 export default function HomePage() {
+  const mockSimulations = getApprovedSimulations()
   const popularSimulations = [...mockSimulations].sort((a, b) => b.totalVotes - a.totalVotes).slice(0, 3)
 
   return (

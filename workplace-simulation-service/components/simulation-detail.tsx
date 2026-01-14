@@ -318,6 +318,12 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
   const totalCommentCount = getTotalCommentCount(comments)
   const choiceLabels = ["A", "B", "C", "D", "E", "F"]
 
+  // 카테고리 배열 처리
+  const categoryIds = Array.isArray(simulation.category) ? simulation.category : [simulation.category]
+  const simulationCategories = categoryIds
+    .map((id) => categories.find((c) => c.id === id))
+    .filter((c) => c !== undefined)
+
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto max-w-4xl px-4">
@@ -332,10 +338,12 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
 
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <Badge variant="secondary">
-              {category?.icon} {category?.name}
-            </Badge>
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            {simulationCategories.map((category) => (
+              <Badge key={category.id} variant="secondary">
+                {category.icon} {category.name}
+              </Badge>
+            ))}
             <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20">진행중</Badge>
           </div>
           <h1 className="text-2xl font-bold text-foreground sm:text-3xl text-balance">{simulation.title}</h1>

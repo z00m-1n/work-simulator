@@ -42,7 +42,11 @@ export function SimulationsContent() {
 
   const filteredSimulations = useMemo(() => {
     return simulations.filter((sim) => {
-      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(sim.category as string)
+      // 카테고리 매칭 (배열 또는 단일 값 처리)
+      const simCategories = Array.isArray(sim.category) ? sim.category : [sim.category]
+      const matchesCategory = selectedCategories.length === 0 || 
+        selectedCategories.some(cat => simCategories.includes(cat))
+      
       const matchesSearch =
         sim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sim.situation.toLowerCase().includes(searchQuery.toLowerCase())

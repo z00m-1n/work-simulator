@@ -9,17 +9,24 @@ interface SimulationCardProps {
 }
 
 export function SimulationCard({ simulation }: SimulationCardProps) {
-  const category = categories.find((c) => c.id === simulation.category)
-  const totalVotes = simulation.choices.reduce((acc, c) => acc + c.votes, 0)
+  // 카테고리가 배열이거나 단일 값일 수 있음
+  const categoryIds = Array.isArray(simulation.category) ? simulation.category : [simulation.category]
+  const simulationCategories = categoryIds
+    .map((id) => categories.find((c) => c.id === id))
+    .filter((c) => c !== undefined)
+  
+  const totalVotes = simulation.totalVotes || simulation.choices.reduce((acc, c) => acc + c.votes, 0)
 
   return (
     <Link href={`/simulations/${simulation.id}`}>
       <Card className="group h-full cursor-pointer transition-all hover:shadow-lg hover:border-primary/50">
         <CardContent className="p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Badge variant="secondary" className="text-xs">
-              {category?.icon} {category?.name}
-            </Badge>
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            {simulationCategories.map((category) => (
+              <Badge key={category.id} variant="secondary" className="text-xs">
+                {category.icon} {category.name}
+              </Badge>
+            ))}
             {simulation.status === "active" && (
               <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20">진행중</Badge>
             )}
