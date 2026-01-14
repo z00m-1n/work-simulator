@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Dialog,
   DialogContent,
@@ -17,7 +19,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { categories } from "@/lib/mock-data"
 import type { Simulation } from "@/lib/db"
 
+const ADMIN_PASSWORD = "0000"
+
 export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [password, setPassword] = useState("")
+  const [passwordError, setPasswordError] = useState("")
   const [simulations, setSimulations] = useState<Simulation[]>([])
   const [selectedSimulation, setSelectedSimulation] = useState<Simulation | null>(null)
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
@@ -25,8 +32,37 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadPendingSimulations()
+    // 저장된 인증 상태 확인
+    const authStatus = sessionStorage.getItem("admin_authenticated")
+    if (authStatus === "true") {
+      setIsAuthenticated(true)
+    } else {
+      setLoading(false)
+    }
   }, [])
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadPendingSimulations()
+    }
+  }, [isAuthenticated])
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true)
+      sessionStorage.setItem("admin_authenticated", "true")
+      setPasswordError("")
+    } else {
+      setPasswordError("비밀번호가 올바르지 않습니다.")
+    }
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    sessionStorage.removeItem("admin_authenticated")
+    setPassword("")
+  }
 
   const loadPendingSimulations = async () => {
     try {
@@ -75,12 +111,55 @@ export default function AdminPage() {
     rejected: 12,
   }
 
+  // 로그인 화면
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl">관리자 로그인</CardTitle>
+            <CardDescription>관리자 페이지에 접근하려면 비밀번호를 입력하세요.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="password">비밀번호</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="비밀번호를 입력하세요"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    setPasswordError("")
+                  }}
+                  className={passwordError ? "border-red-500" : ""}
+                />
+                {passwordError && (
+                  <p className="text-sm text-red-500">{passwordError}</p>
+                )}
+              </div>
+              <Button type="submit" className="w-full">
+                로그인
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto max-w-7xl px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">관리자 대시보드</h1>
-          <p className="mt-2 text-muted-foreground">제안된 상담 케이스를 검토하고 승인/거절합니다.</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">관리자 대시보드</h1>
+            <p className="mt-2 text-muted-foreground">제안된 상담 케이스를 검토하고 승인/거절합니다.</p>
+          </div>
+          <Button variant="outline" onClick={handleLogout}>
+            로그아웃
+          </Button>
         </div>
 
         {/* Stats */}

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { categories, positions } from "@/lib/mock-data"
+import { categories } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
 type Step = "input" | "processing" | "preview" | "submitted"
@@ -266,14 +266,6 @@ export default function SuggestPage() {
                 <div className="space-y-2">
                   <Label className="text-muted-foreground">제목</Label>
                   <Input value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} className="font-medium" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground">페르소나</Label>
-                  <div className="flex gap-2">
-                    <Badge variant="outline">{position}</Badge>
-                    {yearsOfExperience && <Badge variant="outline">{yearsOfExperience}년차</Badge>}
-                  </div>
                 </div>
 
                 <div className="space-y-2">
