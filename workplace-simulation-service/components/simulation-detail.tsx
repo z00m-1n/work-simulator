@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -168,6 +168,18 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
   const [simulation, setSimulation] = useState(initialSimulation)
   const [voting, setVoting] = useState(false)
 
+  // 투표 기록 확인 및 로드
+  useEffect(() => {
+    const voteKey = `vote_${simulation.id}`
+    const savedVote = localStorage.getItem(voteKey)
+    
+    if (savedVote) {
+      setSelectedChoice(savedVote)
+      setHasVoted(true)
+      setShowResults(true)
+    }
+  }, [simulation.id])
+
   const category = categories.find((c) => c.id === simulation.category)
   const totalVotes = simulation.totalVotes + (hasVoted ? 1 : 0)
 
@@ -194,6 +206,10 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
           setSimulation(updatedSim)
           setHasVoted(true)
           setShowResults(true)
+          
+          // localStorage에 투표 기록 저장
+          const voteKey = `vote_${simulation.id}`
+          localStorage.setItem(voteKey, selectedChoice)
         }
       } catch (error) {
         console.error("Vote failed:", error)

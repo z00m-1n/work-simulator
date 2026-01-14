@@ -207,6 +207,148 @@
         "position": "과장",
         "yearsOfExperience": 7
       }
+    },
+    {
+      "category": "colleague",
+      "title": "팀장 회식 메뉴 갈등",
+      "situation": "신입 사원인 나는 팀 회식 일정이 잡히자 팀장님께서 회를 전문으로 하는 횟집을 장소로 선정했다. 하지만 나는 회를 먹을 수 없는 상황이라 불편함을 느낀다. 팀장님의 의도는 이해하지만, 회식 분위기를 해치지 않으면서도 내 식사 제한을 고려하고 싶다.",
+      "choices": [
+        {
+          "id": "1",
+          "text": "팀장님께 직접 상황을 설명하고 다른 메뉴가 있는 곳을 제안한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "동료에게 미리 알려 협조를 구하고, 팀장님께는 다른 메뉴가 있는 횟집을 제안한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "회의 전 팀 채팅에 개인 사정(알레르기 등)을 공유하고, 모두가 참석 가능한 대체 식당을 의견으로 제시한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "그 장소에 그대로 참석하되, 회는 피하고 다른 요리를 주문해 조용히 해결한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "",
+      "aiReasoning": "",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768365095681",
+      "status": "active",
+      "createdAt": "2026-01-14T04:31:35.681Z",
+      "totalVotes": 0,
+      "comments": []
+    },
+    {
+      "category": "colleague",
+      "title": "팀원들의 눈치 대처법",
+      "situation": "장기 휴가를 신청했지만 팀원들이 ‘왜 너만’ 하는 눈치를 보인다. 부서는 현재 한가해 보이지만, 동료들은 업무 부담이나 팀 내 형평성을 고민하고 있을 수도 있다. 또 팀 내 휴가 문화가 아직 자리 잡지 않아 불편함을 느낄 수도 있다. 당신은 동료들의 반응을 어떻게 이해하고, 적절히 대응할지 고민한다.",
+      "choices": [
+        {
+          "id": "1",
+          "text": "팀원들에게 직접 이유를 물어보고, 휴가 사용에 대한 기대와 우려를 솔직히 논의한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "팀 리더에게 상황을 알리고, 공식적인 업무 인수인계 계획을 제시해 동료들의 부담을 최소화한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "휴가 전 업무를 완벽히 정리하고, 대체 담당자를 지정한 뒤 팀 채팅에 공유해 신뢰를 쌓는다.",
+          "votes": 1,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "그냥 휴가 가게 해줘요 엉엉",
+          "votes": 1,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "",
+      "aiReasoning": "",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768365407409",
+      "status": "active",
+      "createdAt": "2026-01-14T04:36:47.409Z",
+      "totalVotes": 2,
+      "comments": [
+        {
+          "id": "1768365509586",
+          "author": "점심 배부른 부엉이",
+          "choiceId": "3",
+          "content": "담당자 지정이 중요함",
+          "timestamp": "2026-01-14T04:38:29.586Z",
+          "likes": 0,
+          "replies": []
+        }
+      ]
     }
   ],
   "pendingSimulations": []
