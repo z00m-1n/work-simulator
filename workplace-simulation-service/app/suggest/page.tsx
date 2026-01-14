@@ -85,7 +85,7 @@ export default function SuggestPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          category: selectedCategories[0], // 첫 번째 카테고리 사용
+          category: selectedCategories.length > 1 ? selectedCategories : selectedCategories[0],
           title: editedTitle,
           situation: editedSituation,
           choices: editedChoices,

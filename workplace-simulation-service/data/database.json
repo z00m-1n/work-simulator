@@ -424,6 +424,141 @@
       "createdAt": "2026-01-14T04:49:50.127Z",
       "totalVotes": 1,
       "comments": []
+    },
+    {
+      "category": "boss",
+      "title": "퇴사 절차 빠르게 진행하기",
+      "situation": "과장으로 근무한 지 1년 차인 나는 개인적인 사정으로 가능한 한 빨리 회사를 떠나고 싶다. 현재 진행 중인 프로젝트가 몇 개 남아있고, 팀원들과의 인수인계가 필요하지만 사직 절차를 최소 기간에 마무리하려는 상황이다. 상사와 HR에 어떻게 접근해야 할지 고민 중이다.",
+      "choices": [
+        {
+          "id": "1",
+          "text": "상사에게 즉시 사직 의사를 밝히고, 1주일 이내 인수인계 계획을 제안한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "HR에 공식 사직서를 제출하고, 남은 원칙적인 통보 기간(2주)을 활용해 빠르게 퇴사 일자를 협상한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "프로젝트 마감일을 기준으로 최소 2주 통보 후, 팀에 인수인계 담당자를 지정하고 퇴사 일정을 조율한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "긴급 사유를 제시해 즉시 퇴사를 요청하고, 연차·퇴직금 정산을 사전에 확인한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "",
+      "aiReasoning": "",
+      "persona": {
+        "position": "과장",
+        "yearsOfExperience": 1
+      },
+      "id": "1768366341743",
+      "status": "active",
+      "createdAt": "2026-01-14T04:52:21.744Z",
+      "totalVotes": 0,
+      "comments": []
+    },
+    {
+      "category": [
+        "project",
+        "boss"
+      ],
+      "title": "팀장 야근에 퇴근 요청",
+      "situation": "현재 진행 중인 프로젝트에서 팀장님께서 야근을 하시고 계시지만, 나는 맡은 업무를 모두 마치고 남은 작업이 없습니다. 이때도 팀장님과 함께 남아 있기를 기다릴까, 아니면 정해진 퇴근시간에 따라 퇴근해도 될지 고민하고 있습니다.",
+      "choices": [
+        {
+          "id": "1",
+          "text": "팀장에게 바로 상황을 알리고 퇴근 허락을 정중히 요청한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "팀장님이 마칠 때까지 남아 추가 지원을 제안한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "업무가 끝났으니 동료에게 인수인계를 하고 퇴근한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "팀장에게 메시지로 오늘 퇴근하고 내일 이어서 진행하겠다고 제안한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "",
+      "aiReasoning": "",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768366519604",
+      "status": "active",
+      "createdAt": "2026-01-14T04:55:19.604Z",
+      "totalVotes": 0,
+      "comments": []
     }
   ],
   "pendingSimulations": []
