@@ -32,13 +32,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // 저장된 인증 상태 확인
-    const authStatus = sessionStorage.getItem("admin_authenticated")
-    if (authStatus === "true") {
-      setIsAuthenticated(true)
-    } else {
-      setLoading(false)
-    }
+    // 매번 비밀번호 입력 필요
+    setLoading(false)
   }, [])
 
   useEffect(() => {
@@ -51,7 +46,6 @@ export default function AdminPage() {
     e.preventDefault()
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true)
-      sessionStorage.setItem("admin_authenticated", "true")
       setPasswordError("")
     } else {
       setPasswordError("비밀번호가 올바르지 않습니다.")
@@ -60,7 +54,6 @@ export default function AdminPage() {
 
   const handleLogout = () => {
     setIsAuthenticated(false)
-    sessionStorage.removeItem("admin_authenticated")
     setPassword("")
   }
 

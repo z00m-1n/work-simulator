@@ -43,9 +43,6 @@ export function SimulationCard({ simulation }: SimulationCardProps) {
                 {category.icon} {category.name}
               </Badge>
             ))}
-            {simulation.status === "active" && (
-              <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20">진행중</Badge>
-            )}
           </div>
           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {simulation.title}

@@ -350,7 +350,6 @@ export function SimulationDetail({ simulation: initialSimulation }: { simulation
                 {category.icon} {category.name}
               </Badge>
             ))}
-            <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20">진행중</Badge>
           </div>
           <h1 className="text-2xl font-bold text-foreground sm:text-3xl text-balance">{simulation.title}</h1>
           <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">

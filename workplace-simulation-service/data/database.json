@@ -714,6 +714,76 @@
       "totalVotes": 1,
       "comments": [],
       "approvedAt": "2026-01-14T05:12:00.227Z"
+    },
+    {
+      "category": [
+        "colleague",
+        "project"
+      ],
+      "title": "딴소리 동료 대처",
+      "situation": "현재 진행 중인 프로젝트 회의에서, 팀원 A가 업무와 무관한 사적인 이야기를 반복해 진행 속도가 늦어지고 있습니다. A는 회의 내내 잡담을 이어가며 핵심 안건을 놓고 토론하는 데 방해가 되고 있어 팀 전체가 불편함을 느끼고 있습니다.",
+      "choices": [
+        {
+          "id": "1",
+          "text": "회의 시작 전에 안건과 목표를 명확히 제시하고, 잡담은 회의 후에 하자고 정중히 안내한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "2",
+          "text": "A에게 개인적으로 다가가, 현재 프로젝트 마감이 촉박하니 집중이 필요하다고 직접 이야기한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "3",
+          "text": "회의 중에 A가 잡담을 시작하면, 즉시 안건으로 되돌려 대화를 전환한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        },
+        {
+          "id": "4",
+          "text": "팀 리더에게 상황을 보고하고, 회의 진행 방식을 개선하도록 공식적인 피드백을 요청한다.",
+          "votes": 0,
+          "votesByPosition": {
+            "intern": 0,
+            "staff": 0,
+            "senior": 0,
+            "manager": 0,
+            "director": 0
+          }
+        }
+      ],
+      "aiRecommendation": "1",
+      "aiReasoning": "회의 전 안건과 목표를 명확히 제시해 잡담을 사전에 차단하면 갈등을 최소화하면서도 회의 효율을 높일 수 있어, 사원으로서 부담 없이 실천 가능하다.",
+      "persona": {
+        "position": "사원",
+        "yearsOfExperience": 1
+      },
+      "id": "1768368155359",
+      "status": "active",
+      "createdAt": "2026-01-14T05:22:35.359Z",
+      "totalVotes": 0,
+      "comments": [],
+      "approvedAt": "2026-01-14T05:22:54.200Z"
     }
   ],
   "pendingSimulations": [
